@@ -1,9 +1,21 @@
 document.getElementById("categoria").addEventListener("change", function () {
     atualizarOpcoes();
     exibirProdutoDesejado();
-});        
-document.getElementById("okButton").addEventListener("click", exibirProdutoDesejado);
-document.getElementById("resetButton").addEventListener("click", resetarFiltros);
+    contarProdutos();
+});
+
+document.getElementById("okButton").addEventListener("click", function () {
+    exibirProdutoDesejado();
+    contarProdutos();
+});
+
+document.getElementById("resetButton").addEventListener("click", function () {
+    resetarFiltros();
+    exibirProdutoDesejado();
+    contarProdutos();
+});
+
+
 
 function atualizarOpcoes() {
     var categoria = document.getElementById("categoria").value;
@@ -92,12 +104,14 @@ function exibirProdutoDesejado() {
         var queimadores = document.getElementById("queimadores").value;
         var voltagem = document.getElementById("voltagem").value;
 
-        var produtos = filtrarProdutosPorOpcoes(categoria, tipo, tamanho, litros, queimadores, voltagem);
+        var produtosFiltrados = filtrarProdutosPorOpcoes(categoria, tipo, tamanho, litros, queimadores, voltagem);
 
-        if (produtos.length > 0) {
-            resultadoDiv.innerHTML = "<h2>Produtos encontrados:</h2><div style='margin-top: 10px;'>";
-            for (var i = 0; i < produtos.length; i++) {
-                var produto = produtos[i];
+        var contagemProdutosFiltrados = produtosFiltrados.length;
+
+        if (contagemProdutosFiltrados > 0) {
+            resultadoDiv.innerHTML = "<h2>Produtos encontrados: " + contagemProdutosFiltrados + " itens</h2><div style='margin-top: 10px;'>";
+            for (var i = 0; i < produtosFiltrados.length; i++) {
+                var produto = produtosFiltrados[i];
                 resultadoDiv.innerHTML += `
                     <div class="produto" style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 4px; background-color: #fff; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                         <strong>Nome:</strong> ${produto.nome}<br>
@@ -115,6 +129,7 @@ function exibirProdutoDesejado() {
         }
     }, 1000);
 }
+
 
 
 
@@ -167,4 +182,33 @@ function filtrarProdutosPorOpcoes(categoria, tipo, tamanho, litros, queimadores,
     });
 
     return produtosFiltrados;
+}
+
+function contarProdutos() {
+    var categoriaSelecionada = document.getElementById("categoria").value;
+    var tipoSelecionado = document.getElementById("tipo").value;
+    var tamanhoSelecionado = document.getElementById("tamanho").value;
+    var litrosSelecionados = document.getElementById("litros").value;
+    var queimadoresSelecionados = document.getElementById("queimadores").value;
+    var voltagemSelecionada = document.getElementById("voltagem").value;
+
+    var produtosFiltrados = filtrarProdutosPorOpcoes(
+        categoriaSelecionada,
+        tipoSelecionado,
+        tamanhoSelecionado,
+        litrosSelecionados,
+        queimadoresSelecionados,
+        voltagemSelecionada
+    );
+
+    var contagemGeral = produtos.length;
+    var contagemFiltrada = produtosFiltrados.length;
+
+    var mensagemContagem = "Total de produtos: " + contagemGeral;
+
+    if (contagemFiltrada > 0) {
+        mensagemContagem += "<br>Produtos filtrados: " + contagemFiltrada;
+    }
+
+    document.getElementById("resultado").innerHTML = mensagemContagem;
 }
